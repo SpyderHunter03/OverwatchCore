@@ -1,0 +1,9 @@
+C:\Users\spyde\source\repos\OverwatchCore\OverwatchCore\obj\Debug\netcoreapp2.1\OverwatchCore.csprojAssemblyReference.cache
+C:\Users\spyde\source\repos\OverwatchCore\OverwatchCore\obj\Debug\netcoreapp2.1\OverwatchCore.csproj.CoreCompileInputs.cache
+C:\Users\spyde\source\repos\OverwatchCore\OverwatchCore\obj\Debug\netcoreapp2.1\OverwatchCore.AssemblyInfoInputs.cache
+C:\Users\spyde\source\repos\OverwatchCore\OverwatchCore\obj\Debug\netcoreapp2.1\OverwatchCore.AssemblyInfo.cs
+C:\Users\spyde\source\repos\OverwatchCore\OverwatchCore\bin\Debug\netcoreapp2.1\OverwatchCore.deps.json
+C:\Users\spyde\source\repos\OverwatchCore\OverwatchCore\bin\Debug\netcoreapp2.1\OverwatchCore.dll
+C:\Users\spyde\source\repos\OverwatchCore\OverwatchCore\bin\Debug\netcoreapp2.1\OverwatchCore.pdb
+C:\Users\spyde\source\repos\OverwatchCore\OverwatchCore\obj\Debug\netcoreapp2.1\OverwatchCore.dll
+C:\Users\spyde\source\repos\OverwatchCore\OverwatchCore\obj\Debug\netcoreapp2.1\OverwatchCore.pdb
