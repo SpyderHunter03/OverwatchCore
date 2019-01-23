@@ -1,2 +1,7 @@
 OverwatchCore Todo List
-☐ Update ProfileParser to parse ProfileUrl correctly
+☐ Fix MultiKillBest
+☐ Fix ObjectiveKills
+☐ Update CareerStats to use dynamic typing instead of static typing
+☐ Add DictionaryExtentions and create ContainsKeyIgnoreCase(this Dictionary<string,dynamic> dict, string key)
+☐ Figure out how to remove culture letters from strings (e.g. Lucio)
+    https://stackoverflow.com/questions/249087/how-do-i-remove-diacritics-accents-from-a-string-in-net

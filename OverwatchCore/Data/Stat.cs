@@ -1,12 +1,12 @@
 using System;
+using System.Collections.Generic;
 
 namespace OverwatchCore.Data
 {
     public class Stat
     {
-        public string HeroName { get; set; }
-        public string CategoryName { get; set; }
-        public string Name { get; set; }
-        public double Value { get; set; }
+        public List<StatValue> TopHeroes { get; set; }
+
+        public List<StatValue> CareerStats { get; set; }
     }
 }

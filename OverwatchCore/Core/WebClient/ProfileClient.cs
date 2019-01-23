@@ -29,16 +29,18 @@ namespace OverwatchCore.Core.WebClient
             internal string ReqUrl;
             internal string ReqContent;
             internal Platform PlayerPlatform;
-            internal string SecReqUrl;
-            internal string ProfilesJson;
 
-            public ProfileRequestData(string reqUrl, string reqContent, Platform playerPlatform, string secReqUrl, string profilesJson)
+            public ProfileRequestData(string reqUrl, string reqContent)
+            {
+                ReqUrl = reqUrl;
+                ReqContent = reqContent;
+            }
+
+            public ProfileRequestData(string reqUrl, string reqContent, Platform playerPlatform)
             {
                 ReqUrl = reqUrl;
                 ReqContent = reqContent;
                 PlayerPlatform = playerPlatform;
-                SecReqUrl = secReqUrl;
-                ProfilesJson = profilesJson;
             }
         }
 

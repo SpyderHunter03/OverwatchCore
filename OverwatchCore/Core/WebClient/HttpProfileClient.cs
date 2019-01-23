@@ -22,11 +22,11 @@ namespace OverwatchCore.Core.WebClient
             catch { ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls11; }
             _careerClient = new HttpClient
             {
-                BaseAddress = new Uri("https://playoverwatch.com/en-gb/career/")
+                BaseAddress = new Uri("https://playoverwatch.com/en-us/career/")
             };
             _searchClient = new HttpClient
             {
-                BaseAddress = new Uri("https://playoverwatch.com/en-us/search/")
+                BaseAddress = new Uri("https://playoverwatch.com/en-us/career/platforms/")
             };
         }
 
@@ -41,38 +41,50 @@ namespace OverwatchCore.Core.WebClient
             var reqUrl = platform != Platform.Pc 
                 ? $"{platform.ToLowerString()}/{username}" 
                 : $"pc/{username.BattletagToUrlFriendlyString()}";
-            var secReqUrl = $"account-by-name/{username}";
-            return GetProfileUrl(reqUrl, platform, secReqUrl);
+            return GetProfileRequestData(reqUrl, platform);
         }
 
         internal override async Task<ProfileRequestData> GetProfileDetectPlatform(string username)
         {
-            if (username.IsValidBattletag()) return await GetProfileUrl($"pc/{username.BattletagToUrlFriendlyString()}", Platform.Pc, $"account-by-name/{username}");
+            if (username.IsValidBattletag()) return await GetProfileRequestData($"pc/{username.BattletagToUrlFriendlyString()}", Platform.Pc);
             foreach(var platform in Enum.GetValues(typeof(Platform)).Cast<Platform>().Where(x => x != Platform.Pc))
             {
-                var result = await GetProfileUrl($"{platform.ToLowerString()}/{username.BattletagToUrlFriendlyString()}", platform, $"account-by-name/{username}");
+                var result = await GetProfileRequestData($"{platform.ToLowerString()}/{username.BattletagToUrlFriendlyString()}", platform);
                 if (result == null) continue;
                 return result;
             }
             return null;
         }
 
-        internal async Task<ProfileRequestData> GetProfileUrl(string reqString, Platform platform, string secReqUrl)
+        internal async Task<ProfileRequestData> GetProfileRequestData(string reqString, Platform platform)
+        {
+            var pageInfo = await GetProfilePageInformation(reqString, platform);
+            if (!pageInfo.HasValue) return null;
+            
+            return new ProfileRequestData(pageInfo.Value.Url, pageInfo.Value.Content, platform);
+        }
+
+        internal async Task<(string Url, string Content)?> GetProfilePageInformation(string reqString, Platform platform)
         {
             using (var result = await _careerClient.GetAsync(reqString))
-            using (var secResult = await _searchClient.GetAsync(secReqUrl))
             {
                 if (!result.IsSuccessStatusCode) return null;
                 var rsltContent = await result.Content.ReadAsStringAsync();
                 if (rsltContent.Contains("Profile Not Found")) return null;
                 var rsltUrl = result.RequestMessage.RequestUri.ToString();
+                return (rsltUrl, rsltContent);
+            }
+        }
 
+        internal async Task<(string Url, string Content)?> GetProfileApiInformation(string userId)
+        {
+            using (var secResult = await _searchClient.GetAsync(userId))
+            {
                 if (!secResult.IsSuccessStatusCode) return null;
                 var secRsltContent = await secResult.Content.ReadAsStringAsync();
                 if (secRsltContent.Contains("[]")) return null;
                 var secRsltUrl = secResult.RequestMessage.RequestUri.ToString();
-
-                return new ProfileRequestData(rsltUrl, rsltContent, platform, secRsltUrl, secRsltContent);
+                return (secRsltUrl, secRsltContent);
             }
         }
 

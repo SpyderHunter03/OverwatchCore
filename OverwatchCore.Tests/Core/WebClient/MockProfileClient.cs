@@ -18,9 +18,7 @@ namespace OverwatchCore.Tests.Core.WebClient
             _mockData = new ProfileRequestData(
                 "https://playoverwatch.com/en-gb/career/pc/eu/SpyderHunter-1589", 
                 File.ReadAllText("TestSource.txt"), 
-                Platform.Pc, 
-                "https://playoverwatch.com/en-us/search/account-by-name/SpyderHunter#1589",
-                File.ReadAllText("SearchTestSource.txt"));
+                Platform.Pc);
         }
 
         internal override Task<ProfileRequestData> GetProfileExact(string username, Platform platform)

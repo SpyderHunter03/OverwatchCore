@@ -5869,11 +5869,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\spyde\\source\\repos\\OverwatchCore\\OverwatchCore.Tests\\OverwatchCore.Tests.csproj",
+      "projectUniqueName": "c:\\Users\\spyde\\source\\repos\\OverwatchCore\\OverwatchCore.Tests\\OverwatchCore.Tests.csproj",
       "projectName": "OverwatchCore.Tests",
-      "projectPath": "C:\\Users\\spyde\\source\\repos\\OverwatchCore\\OverwatchCore.Tests\\OverwatchCore.Tests.csproj",
+      "projectPath": "c:\\Users\\spyde\\source\\repos\\OverwatchCore\\OverwatchCore.Tests\\OverwatchCore.Tests.csproj",
       "packagesPath": "C:\\Users\\spyde\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\spyde\\source\\repos\\OverwatchCore\\OverwatchCore.Tests\\obj\\",
+      "outputPath": "c:\\Users\\spyde\\source\\repos\\OverwatchCore\\OverwatchCore.Tests\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -5892,8 +5892,8 @@
       "frameworks": {
         "netcoreapp2.2": {
           "projectReferences": {
-            "C:\\Users\\spyde\\source\\repos\\OverwatchCore\\OverwatchCore\\OverwatchCore.csproj": {
-              "projectPath": "C:\\Users\\spyde\\source\\repos\\OverwatchCore\\OverwatchCore\\OverwatchCore.csproj"
+            "c:\\Users\\spyde\\source\\repos\\OverwatchCore\\OverwatchCore\\OverwatchCore.csproj": {
+              "projectPath": "c:\\Users\\spyde\\source\\repos\\OverwatchCore\\OverwatchCore\\OverwatchCore.csproj"
             }
           }
         }

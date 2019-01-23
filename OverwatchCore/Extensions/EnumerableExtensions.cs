@@ -7,20 +7,21 @@ namespace OverwatchCore.Extensions
 {
     public static class EnumerableExtensions
     {
-        public static IEnumerable<Stat> FilterByHero(this IEnumerable<Stat> stats, string heroName)
+        public static IEnumerable<StatValue> FilterByHero(this IEnumerable<StatValue> stats, string heroName)
         {
             heroName = heroName.Contains(" ") ? heroName.Replace(" ", string.Empty) : heroName;
             return stats.Where(x => x.HeroName.EqualsIgnoreCase(heroName));
-        }     
+        }
 
-        public static IEnumerable<Stat> FilterByCategory(this IEnumerable<Stat> stats, string categoryName) =>
+        public static IEnumerable<StatValue> FilterByCategory(this IEnumerable<StatValue> stats, string categoryName) =>
             stats.Where(x => x.CategoryName.EqualsIgnoreCase(categoryName));
 
-        public static IEnumerable<Stat> FilterByName(this IEnumerable<Stat> stats, string statName) =>
+        public static IEnumerable<StatValue> FilterByName(this IEnumerable<StatValue> stats, string statName) =>
             stats.Where(x => x.Name.EqualsIgnoreCase(statName));
 
-        public static Stat GetStatExact(this IEnumerable<Stat> stats, string heroName, string categoryName, string statName) =>
-            stats.FilterByHero(heroName)
+        public static StatValue GetStatExact(this List<StatValue> statValues, string heroName, string categoryName, string statName) =>
+            
+            statValues.FilterByHero(heroName)
                 .FilterByCategory(categoryName)
                 .FilterByName(statName)
                 .FirstOrDefault();
