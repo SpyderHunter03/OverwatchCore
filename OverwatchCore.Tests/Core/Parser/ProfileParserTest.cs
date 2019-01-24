@@ -8,6 +8,10 @@ using Xunit;
 using OverwatchCore.Data;
 using OverwatchCore.Enums;
 using System;
+using System.Linq;
+using System.Diagnostics;
+using Xunit.Abstractions;
+using System.Threading.Tasks;
 
 namespace OverwatchCore.Tests.Core.Parser
 {
@@ -17,17 +21,19 @@ namespace OverwatchCore.Tests.Core.Parser
         // The source of the page was downloaded and stored on 02/07/2018
         // Will serve as the basis for parser tests barring a more reliable solution.
 
-        private static readonly Player _testPlayer;
+        private readonly Player _testPlayer;
+        private readonly ITestOutputHelper _testOutputHelper;
 
-        static ProfileParserTest()
+        public ProfileParserTest(ITestOutputHelper testOutputHelper)
         {
+            _testOutputHelper = testOutputHelper;
             var source = File.ReadAllText("TestSource.txt");
             //var searchSource = File.ReadAllText("SearchTestSource.txt");
             var data = new ProfileClient.ProfileRequestData("", source, Platform.Pc);
             var parser = new ProfileParser();
             _testPlayer = new Player();
             parser.Parse(_testPlayer, data).GetAwaiter().GetResult();
-        }       
+        }
 
         [Fact]
         public void Parsed_Profile_PlayerLevel_Should_Be_Correct()
@@ -91,5 +97,16 @@ namespace OverwatchCore.Tests.Core.Parser
         [Fact]
         public void Parsed_Profile_PlayerLevelImage_Should_Be_Correct() => 
             _testPlayer.PlayerLevelImage.Should().NotBeNullOrEmpty();
+
+        [Fact]
+        public void Parsed_CasualStats_Should_Have_All_Heroes_In_CareerStats()
+        {
+            foreach(var hero in Enum.GetNames(typeof(OverwatchHero)))
+            {
+                _testPlayer.CasualStats.CareerStats.GetStatExact(hero, "Game", "TimePlayed").Should().NotBeNull($"because {hero} should be in the stats.");
+
+            }
+            
+        }
     }
 }

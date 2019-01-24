@@ -1,7 +1,7 @@
 OverwatchCore Todo List
-☐ Fix MultiKillBest
-☐ Fix ObjectiveKills
-☐ Update CareerStats to use dynamic typing instead of static typing
-☐ Add DictionaryExtentions and create ContainsKeyIgnoreCase(this Dictionary<string,dynamic> dict, string key)
-☐ Figure out how to remove culture letters from strings (e.g. Lucio)
+✔ Fix MultiKillBest @done (1/23/2019, 4:44:27 AM)
+✔ Fix ObjectiveKills @done (1/23/2019, 4:44:28 AM)
+✔ Update CareerStats to use dynamic typing instead of static typing @done (1/23/2019, 4:44:30 AM)
+✘ Add DictionaryExtentions and create ContainsKeyIgnoreCase(this Dictionary<string,dynamic> dict, string key) @cancelled (1/23/2019, 11:31:57 PM)
+✔ Figure out how to remove culture letters from strings (e.g. Lucio) @done (1/23/2019, 4:44:35 AM)
     https://stackoverflow.com/questions/249087/how-do-i-remove-diacritics-accents-from-a-string-in-net

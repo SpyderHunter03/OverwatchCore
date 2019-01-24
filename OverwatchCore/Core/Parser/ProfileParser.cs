@@ -383,34 +383,9 @@ namespace OverwatchCore.Core.Parser
 
         private static string ClearSpecialCharacters(string str)
         {
-            return str.Replace("ú","u");
-            // byte[] tempBytes = System.Text.Encoding.GetEncoding("ISO-8859-8").GetBytes(str);
-            // string asciiStr = System.Text.Encoding.UTF8.GetString(tempBytes);
-            // return asciiStr;
-            // return System.Web.HttpUtility.UrlDecode(
-            //     System.Web.HttpUtility.UrlEncode(
-            //     str, Encoding.GetEncoding("iso-8859-7")));
-        }
-
-        private static double OwValToDouble(string input)
-        {
-            if (input.ToLower().Contains("hour"))
-                return TimeSpan.FromHours(int.Parse(input.Substring(0, input.IndexOf(" ", StringComparison.Ordinal)))).TotalSeconds;
-            if (input.ToLower().Contains("minute"))
-                return TimeSpan.FromMinutes(int.Parse(input.Substring(0, input.IndexOf(" ", StringComparison.Ordinal)))).TotalSeconds;
-            if (!input.Contains(":"))
-                return double.TryParse(input.Replace(",", "").Replace("%", ""), out var rslt1) ? rslt1 : 0;
-            if (TimeSpan.TryParseExact(input, @"mm\:ss", CultureInfo.CurrentCulture, out var outputTime))
-                return outputTime.TotalSeconds;
-            if (TimeSpan.TryParseExact(input, @"hh\:mm\:ss", CultureInfo.CurrentCulture, out var outputTime1))
-                return outputTime1.TotalSeconds;
-            return double.TryParse(input.Replace(",", "").Replace("%", ""), out var rslt2) ? rslt2 : 0;
-        }
-
-        private static string ParseHeroName(string input)
-        {
-            // todo: This is disgusting I don't know how this line has survived so long.
-            return input.ToLower() == "all heroes" ? "AllHeroes" : input.Replace("ú", "u").Replace(":", "").Replace(" ", "").Replace("ö", "o").Replace(".", "");
+            return System.Web.HttpUtility.UrlDecode(
+                System.Web.HttpUtility.UrlEncode(
+                str, Encoding.GetEncoding("iso-8859-7")));
         }
 
         private static Endorsement ParseEndorsementName(string input)

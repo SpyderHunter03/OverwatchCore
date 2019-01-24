@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using OverwatchCore.Enums;
 
@@ -30,6 +31,15 @@ namespace OverwatchCore.Extensions
             return Enum.GetValues(typeof(Platform))
                 .Cast<Platform>()
                 .FirstOrDefault(platform => string.Equals(platformString.ToLower(), platform.ToLowerString()));
+        }
+
+        internal static string ClearSpecialCharacters(this string heroName)
+        {
+            var specCharsRemoved = System.Web.HttpUtility.UrlDecode(
+                System.Web.HttpUtility.UrlEncode(
+                heroName, Encoding.GetEncoding("iso-8859-7")));
+            
+            return specCharsRemoved.Replace(":", string.Empty).Replace(" ", string.Empty);
         }
     }
 }
