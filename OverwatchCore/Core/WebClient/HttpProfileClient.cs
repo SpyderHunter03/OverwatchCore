@@ -46,7 +46,8 @@ namespace OverwatchCore.Core.WebClient
 
         internal override async Task<ProfileRequestData> GetProfileDetectPlatform(string username)
         {
-            if (username.IsValidBattletag()) return await GetProfileRequestData($"pc/{username.BattletagToUrlFriendlyString()}", Platform.Pc);
+            if (username.IsValidBattletag())
+                return await GetProfileRequestData($"pc/{username.BattletagToUrlFriendlyString()}", Platform.Pc);
             foreach(var platform in Enum.GetValues(typeof(Platform)).Cast<Platform>().Where(x => x != Platform.Pc))
             {
                 var result = await GetProfileRequestData($"{platform.ToLowerString()}/{username.BattletagToUrlFriendlyString()}", platform);

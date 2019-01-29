@@ -8,10 +8,10 @@ namespace OverwatchCore.Tests.Core
 {
     public class OverwatchClientIntergrationTests
     {
-        private const string psnUsername = "RERezy";
-        private const string psnUrl = "https://playoverwatch.com/en-us/career/psn/RERezy";
-        private const string pcUsername = "Rezy#11779";
-        private const string pcUrl = "https://playoverwatch.com/en-us/career/pc/Rezy-11779";
+        private const string psnUsername = "Frostbit794";
+        private const string psnUrl = "https://playoverwatch.com/en-us/career/psn/Frostbit794";
+        private const string pcUsername = "Frostbit#11387";
+        private const string pcUrl = "https://playoverwatch.com/en-us/career/pc/Frostbit-11387";
 
         private const string pcTestUsername = "Kephrii#11520";
         private const string pcTestUrl = "https://playoverwatch.com/en-us/career/pc/Kephrii-11520";
