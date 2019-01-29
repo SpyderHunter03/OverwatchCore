@@ -1,1 +1,0 @@
-[{"platform":"pc","name":"SpyderHunter#1589","urlName":"SpyderHunter-1589","level":696,"portrait":"https://d1u1mce87gyfbn.cloudfront.net/game/unlocks/0x0250000000000C82.png","isPublic":true}]
