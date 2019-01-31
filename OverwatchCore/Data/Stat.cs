@@ -5,8 +5,8 @@ namespace OverwatchCore.Data
 {
     public class Stat
     {
-        public List<StatValue> TopHeroes { get; set; }
+        public ICollection<StatValue> TopHeroes { get; set; }
 
-        public List<StatValue> CareerStats { get; set; }
+        public ICollection<StatValue> CareerStats { get; set; }
     }
 }

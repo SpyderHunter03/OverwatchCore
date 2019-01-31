@@ -58,8 +58,23 @@ namespace OverwatchCore.Core
             if (!username.IsValidPsnId() && !username.IsValidXblId())
                 throw new ArgumentException("Not a valid XBL, PSN or Battlenet ID", nameof(username));
             var player = new Player { Username = username };
-            var result = await _profileClient.GetProfileDetectPlatform(player);
-            return await _profileParser.Parse(player, result);
+
+            Player retval;
+            var retry = 0;
+
+            do
+            {
+                var result = await _profileClient.GetProfileDetectPlatform(player);
+
+                if (result == null)
+                    return null;
+                    
+                retval = await _profileParser.Parse(player, result);
+
+                retry++;
+            } while (retval == null && retry <= 5);
+
+            return retval;
         }
 
         /// <summary>
@@ -85,11 +100,25 @@ namespace OverwatchCore.Core
             };
 
             ProfileClient.ProfileRequestData pageData;
-            if (platform != Platform.Pc)
-                pageData = await _profileClient.GetProfileExact(player);
-            else
-                pageData = await _profileClient.GetProfileExact(player);
-            return pageData == null ? null : await _profileParser.Parse(player, pageData);
+            Player retval;
+            var retry = 0;
+
+            do
+            {
+                if (platform != Platform.Pc)
+                    pageData = await _profileClient.GetProfileExact(player);
+                else
+                    pageData = await _profileClient.GetProfileExact(player);
+
+                if (pageData == null)
+                    return null;
+            
+                retval = await _profileParser.Parse(player, pageData);
+
+                retry++;
+            } while (retval == null && retry <= 5);
+
+            return retval;
         }
 
         /// <summary>
@@ -105,8 +134,23 @@ namespace OverwatchCore.Core
                 throw new ArgumentException("Invalid Username for Platform", nameof(player));
             if (!player.Username.IsValidBattletag() && player.Platform == Platform.Pc)
                 throw new ArgumentException("Invalid Username for PC", nameof(player));
-            var pageData = await _profileClient.GetProfileExact(player);
-            return pageData == null ? null : await _profileParser.Parse(player, pageData);
+            
+            Player retval;
+            var retry = 0;
+
+            do
+            {
+                var pageData = await _profileClient.GetProfileExact(player);
+
+                if (pageData == null)
+                    return null;
+
+                retval = await _profileParser.Parse(player, pageData);
+
+                retry++;
+            } while (retval == null && retry <= 5);
+            
+            return retval;
         }
 
         /// <summary>
@@ -117,28 +161,28 @@ namespace OverwatchCore.Core
         /// <param name="player">A populated player profile.</param>
         public async Task GetAliasesAsync(Player player)
         {
-            if(player == null)
-                throw new ArgumentNullException(nameof(player));
-            if(string.IsNullOrWhiteSpace(player.ProfileUrl))
-                throw new ArgumentException("Player has not had their profile loaded", nameof(player));
+            // if(player == null)
+            //     throw new ArgumentNullException(nameof(player));
+            // if(string.IsNullOrWhiteSpace(player.ProfileUrl))
+            //     throw new ArgumentException("Player has not had their profile loaded", nameof(player));
             
-            player.Aliases = new List<Player.Alias>();
-            var rslt = await _profileClient.GetAliases(player.PlayerId);
-            var profiles = rslt.Where(x => !string.Equals(x.platform, player.Platform.ToString(), StringComparison.OrdinalIgnoreCase));
-            foreach (var profile in profiles)
-            {
-                player.Aliases.Add(new Player.Alias()
-                {
-                    UrlName = profile.urlName,
-                    Username = profile.name,
-                    Platform = profile.platform.PlatformStringToEnum(),
-                    //Visibility is null in first test
-                    ProfileVisibility = 
-                        profile?.visibility?.isFriendsOnly ?? false ? Visibility.FriendsOnly 
-                        : profile?.visibility?.isPrivate ?? false ? Visibility.Private
-                        : Visibility.Public
-                });
-            }
+            // player.Aliases = new List<Player.Alias>();
+            // var rslt = await _profileClient.GetAliases(player.PlayerId);
+            // var profiles = rslt.Where(x => !string.Equals(x.platform, player.Platform.ToString(), StringComparison.OrdinalIgnoreCase));
+            // foreach (var profile in profiles)
+            // {
+            //     player.Aliases.Add(new Player.Alias()
+            //     {
+            //         UrlName = profile.urlName,
+            //         Username = profile.name,
+            //         Platform = profile.platform.PlatformStringToEnum(),
+            //         //Visibility is null in first test
+            //         ProfileVisibility = 
+            //             profile?.visibility?.isFriendsOnly ?? false ? Visibility.FriendsOnly 
+            //             : profile?.visibility?.isPrivate ?? false ? Visibility.Private
+            //             : Visibility.Public
+            //     });
+            // }
         }
 
         /// <summary>
@@ -149,18 +193,19 @@ namespace OverwatchCore.Core
         /// <returns>A List of player profiles connected with the given player, or null if no other profiles are found.</returns>
         public async Task<List<Player>> GetOtherProfilesAsync(Player player)
         {
-            if (player.Aliases == null)
-                throw new ArgumentException("Player has no aliases loaded, use GetAliasesAsync first.", nameof(player));
-            if (player.Aliases.Count == 0)
-                return null;
-            var profiles = new List<Player>();
-            foreach (var alias in player.Aliases)
-                profiles.Add(await GetOtherProfileFromAliasAsync(alias));
-            return profiles;
+            // if (player.Aliases == null)
+            //     throw new ArgumentException("Player has no aliases loaded, use GetAliasesAsync first.", nameof(player));
+            // if (player.Aliases.Count == 0)
+            //     return null;
+            // var profiles = new List<Player>();
+            // foreach (var alias in player.Aliases)
+            //     profiles.Add(await GetOtherProfileFromAliasAsync(alias));
+            // return profiles;
+            return null;
         }
 
-        public async Task<Player> GetOtherProfileFromAliasAsync(Player.Alias playerAlias) =>
-            await GetPlayerAsync(playerAlias.Username, playerAlias.Platform);
+        // public async Task<Player> GetOtherProfileFromAliasAsync(Player.Alias playerAlias) =>
+        //     await GetPlayerAsync(playerAlias.Username, playerAlias.Platform);
 
         public void Dispose() => _profileClient.Dispose();
     }

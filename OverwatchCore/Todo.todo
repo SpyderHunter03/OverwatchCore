@@ -5,3 +5,10 @@ OverwatchCore Todo List
 ✘ Add DictionaryExtentions and create ContainsKeyIgnoreCase(this Dictionary<string,dynamic> dict, string key) @cancelled (1/23/2019, 11:31:57 PM)
 ✔ Figure out how to remove culture letters from strings (e.g. Lucio) @done (1/23/2019, 4:44:35 AM)
     https://stackoverflow.com/questions/249087/how-do-i-remove-diacritics-accents-from-a-string-in-net
+
+✔ Move all code over to OverstatClient.cs @done (1/31/2019, 2:56:52 AM)
+✔ Parse RawPlayerStats into Player object @done (1/31/2019, 2:56:53 AM)
+
+☐ Convert OverstatClient to same structure as previous OverwatchClient
+☐ Clean up remaining unused code
+☐ Create tests for OverstatTestSource.txt

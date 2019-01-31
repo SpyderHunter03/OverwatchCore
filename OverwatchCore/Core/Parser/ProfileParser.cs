@@ -7,12 +7,14 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AngleSharp;
+using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
 using AngleSharp.Html.Parser;
 using Newtonsoft.Json;
 using OverwatchCore.Core.WebClient;
 using OverwatchCore.Data;
 using OverwatchCore.Enums;
+using OverwatchCore.Extensions;
 using OverwatchCore.StaticResources;
 
 [assembly: InternalsVisibleToAttribute("OverwatchCore.Tests")]
@@ -27,137 +29,119 @@ namespace OverwatchCore.Core.Parser
             using (var doc = await _parser.ParseDocumentAsync(pageData.ReqContent))
             {
                 //Checks if profile not found, site still returns 200 in this case
-                if (doc.QuerySelector("h1.u-align-center")?.FirstChild?.TextContent.Equals("Profile Not Found") ?? false)
-                    return null;
+                // if (doc.QuerySelector("h1.u-align-center")?.FirstChild?.TextContent.Equals("Profile Not Found") ?? false)
+                //     return null;
 
-                //Scrapes all stats for the passed user and sets member data
-                player = ParseGeneralInfo(player, doc);
-                player.ProfileUrl = pageData.ReqUrl;
+                // //Scrapes all stats for the passed user and sets member data
+                // player = ParseGeneralInfo(player, doc);
+
+                // player.ProfileUrl = pageData.ReqUrl;
                 
-                //Get user id from script at page
-                player.PlayerId = PlayerId(doc);
-                player.Platform = pageData.PlayerPlatform;
+                // //Get user id from script at page
+                // player.PlayerId = PlayerId(doc);
+                // player.Platform = pageData.PlayerPlatform;
 
-                var profile = await ParseProfile(player);
-                if (profile == null)
-                    return player;
-                player.Username = profile.Name;
-                player.Prestige = (ushort)(profile.PlayerLevel / 100);
+                // var profile = await ParseProfile(player);
+                // if (profile == null)
+                //     return null;
+                // player.Username = profile.Name;
+                // player.Prestige = (ushort)(profile.PlayerLevel / 100);
 
-                if (IsPlayerProfilePrivate(doc))
-                {
-                    player.IsProfilePrivate = true;
-                    return player;
-                }
+                // player.IsProfilePrivate = IsPlayerProfilePrivate(doc);
+                // if (!player.IsProfilePrivate.HasValue) return null;
+                // if (player.IsProfilePrivate.Value) return player.Validate(privateProfile: true);
+                
+                // // These are only available if the profile is not private
+                // player.Endorsements = Endorsements(doc);
+                // player.CasualStats = ParseDetailedStats(doc, Mode.Casual);
+                // player.CompetitiveStats = ParseDetailedStats(doc, Mode.Competitive);
+                // player.Achievements = Achievements(doc);
 
-                player.Endorsements = Endorsements(doc);
-                //player.CompetitiveStats = Stats(doc, Mode.Competitive);
-                player.CasualStats = ParseDetailedStats(doc, Mode.Casual);
-                player.CompetitiveStats = ParseDetailedStats(doc, Mode.Competitive);
-                player.Achievements = Achievements(doc);
-                return player;
+                return player.Validate();
             }
         }
 
         internal Player ParseGeneralInfo(Player player, IHtmlDocument doc)
         {
-            player.ProfilePortraitUrl = PortraitImage(doc);
-            player.PlayerLevel = PlayerLevel(doc);
-            player.PlayerLevelImage = PlayerLevelImage(doc);
-            player.PrestigeImage = PlayerPrestigeImage(doc);
-            player.EndorsementLevel = EndorsementLevel(doc);
-            player.EndorsementImage = EndorsementImage(doc);
-            player.CompetitiveRank = CompetitiveRank(doc);
-            player.CompetitiveRankImageUrl = CompetitiveRankImage(doc);
-            player.GamesWon = GamesWon(doc);
+            // player.ProfilePortraitUrl = PortraitImage(doc);
+            // player.PlayerLevel = PlayerLevel(doc);
+            // player.PlayerLevelImage = PlayerLevelImage(doc);
+            // player.PrestigeImage = PlayerPrestigeImage(doc);
+            // player.EndorsementLevel = EndorsementLevel(doc);
+            // player.EndorsementImage = EndorsementImage(doc);
+            // player.CompetitiveRank = CompetitiveRank(doc);
+            // player.CompetitiveRankImageUrl = CompetitiveRankImage(doc);
+            // player.GamesWon = GamesWon(doc);
             return player;
         }
 
-        internal async Task<Profile> ParseProfile(Player player)
-        {
-            using (var httpClient = new HttpProfileClient())
-            {
-                var profileInformation = await httpClient.GetProfileApiInformation(player.PlayerId);
-                if (!profileInformation.HasValue) return null;
+        // internal async Task<Profile> ParseProfile(Player player)
+        // {
+        //     using (var httpClient = new HttpProfileClient())
+        //     {
+        //         var profileInformation = await httpClient.GetProfileApiInformation(player.PlayerId);
+        //         if (!profileInformation.HasValue) return null;
 
-                var profiles = JsonConvert.DeserializeObject<List<Profile>>(profileInformation.Value.Content);
-                return profiles.FirstOrDefault(p => p.Platform.Equals(player.Platform.ToString(), StringComparison.InvariantCultureIgnoreCase));
-            }
-        }
+        //         var profiles = JsonConvert.DeserializeObject<List<Profile>>(profileInformation.Value.Content);
+        //         return profiles.FirstOrDefault(p => p.Platform.Equals(player.Platform.ToString(), StringComparison.InvariantCultureIgnoreCase));
+        //     }
+        // }
 
         private static readonly Regex PlayerLevelImageRegex = new Regex("(0x\\w*)(?=_)");
         private static readonly Regex PlayerIdRegex = new Regex("window\\.app\\.career\\.init\\((\\d+)\\,");
 
-        private static bool IsPlayerProfilePrivate(IHtmlDocument pageData)
-        {
-            return pageData.QuerySelector("p.masthead-permission-level-text")?.FirstChild?.TextContent == "Private Profile";
-        }
+        private static bool? IsPlayerProfilePrivate(IHtmlDocument doc) =>
+            doc.GetBool(WebpageSelector.IsPlayerProfilePrivate, "Private Profile", (ele) => ele.FirstChild?.TextContent);
 
         private static string PlayerId(IHtmlDocument doc)
         {
-            var lastScript = doc.QuerySelectorAll("script").Last().TextContent;
+            var lastScript = doc.QuerySelectorAll("script")?.Last()?.TextContent;
+            if (lastScript == null) return null;
+            
             var playerIdRegex = PlayerIdRegex.Match(lastScript).Value;
             var playerId = playerIdRegex.Substring(playerIdRegex.IndexOf('(') + 1);
+            if (playerId == null || playerId.Length == 0) return null;
             return playerId.Substring(0, playerId.Length-1);
         }
 
-        private static string PortraitImage(IHtmlDocument doc) => 
-            doc.QuerySelector("img.player-portrait").GetAttribute("src");
+        private static string PortraitImage(IHtmlDocument doc) =>
+            doc.GetString(WebpageSelector.PortraitImage, "src");
+            
+        private static ushort? CompetitiveRank(IHtmlDocument doc) =>
+            doc.GetUShort(WebpageSelector.CompetitiveRank, (ele) => ele.FirstChild?.TextContent);
 
-        private static ushort CompetitiveRank(IHtmlDocument doc)
-        {
-            ushort.TryParse(doc.QuerySelector("div.competitive-rank div.u-align-center")?.FirstChild?.TextContent, out var parsedCompetitiveRank);
-            return parsedCompetitiveRank;
-        }
+        private static string CompetitiveRankImage(IHtmlDocument doc) =>
+            doc.GetString(WebpageSelector.CompetitiveRankImage, "src");
 
-        private static string CompetitiveRankImage(IHtmlDocument doc)
-        {
-            var compImg = doc.QuerySelector("div.competitive-rank img")?.GetAttribute("src");
-            return compImg ?? "";
-        }
+        private static ushort? PlayerLevel(IHtmlDocument doc) =>
+            doc.GetUShort(WebpageSelector.PlayerLevel, (ele) => ele.FirstChild?.TextContent);
 
-        private static ushort PlayerLevel(IHtmlDocument doc)
-        {
-            ushort.TryParse(doc.QuerySelector("div.player-level div.u-vertical-center")?.FirstChild?.TextContent, out var parsedPlayerLevel);
-            return parsedPlayerLevel;
-        }
+        private static string PlayerLevelImage(IHtmlDocument doc) =>
+            doc.GetString(WebpageSelector.PlayerLevelImage, "style", (str) => 
+            { 
+                var startIndex = str.IndexOf('(') + 1;
+                return str.Substring(startIndex, str.IndexOf(')') - startIndex);
+            });
 
-        private static string PlayerLevelImage(IHtmlDocument doc)
-        {
-            var str = doc.QuerySelector("div.player-level").GetAttribute("style");
-            var startIndex = str.IndexOf('(') + 1;
-            return str.Substring(startIndex, str.IndexOf(')') - startIndex);
-        }
+        private static string PlayerPrestigeImage(IHtmlDocument doc) =>
+            doc.GetString(WebpageSelector.PlayerPrestigeImage, "style", (str) => 
+            { 
+                var startIndex = str.IndexOf('(') + 1;
+                return str.Substring(startIndex, str.IndexOf(')') - startIndex);
+            });
 
-        private static string PlayerPrestigeImage(IHtmlDocument doc)
-        {
-            var str = doc.QuerySelector("div.player-rank")?.GetAttribute("style");
-            if (str == null) return "";
-            var startIndex = str.IndexOf('(') + 1;
-            return str.Substring(startIndex, str.IndexOf(')') - startIndex);
-        }
+        private static ushort? EndorsementLevel(IHtmlDocument doc) =>
+            doc.GetUShort(WebpageSelector.EndorsementLevel, (ele) => ele.FirstChild?.TextContent);
 
-        private static ushort EndorsementLevel(IHtmlDocument doc)
-        {
-            ushort.TryParse(doc.QuerySelector("div.endorsement-level div.u-center")?.FirstChild?.TextContent, out ushort parsedEndorsementLevel);
-            return parsedEndorsementLevel;
-        }
+        private static string EndorsementImage(IHtmlDocument doc) =>
+            doc.GetString(WebpageSelector.EndorsementImage, "style", (str) => 
+            { 
+                var startIndex = str.IndexOf('(') + 1;
+                return str.Substring(startIndex, str.IndexOf(')') - startIndex);
+            });
 
-        private static string EndorsementImage(IHtmlDocument doc)
-        {
-            var str = doc.QuerySelector("div.EndorsementIcon").GetAttribute("style");
-            var startIndex = str.IndexOf('(') + 1;
-            return str.Substring(startIndex, str.IndexOf(')') - startIndex);
-
-        }
-
-        private static ushort GamesWon(IHtmlDocument doc)
-        {
-            var str = doc.QuerySelector("div.masthead p.masthead-detail.h4 span")?.TextContent?.Replace(" games won", "");
-            if (str == null) return 0;
-            ushort.TryParse(str, out ushort parsedgameswon);
-            return parsedgameswon;
-        }
+        private static ushort? GamesWon(IHtmlDocument doc) => 
+            doc.GetUShort(WebpageSelector.GamesWon, (ele) => ele.TextContent, (str) => str.Replace(" games won", ""));
 
         private static List<Achievement> Achievements(IHtmlDocument doc)
         {

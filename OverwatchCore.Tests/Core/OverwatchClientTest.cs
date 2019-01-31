@@ -1,4 +1,6 @@
 using System;
+using System.Threading.Tasks;
+using FluentAssertions;
 using OverwatchCore;
 using OverwatchCore.Core;
 using OverwatchCore.Enums;
@@ -9,24 +11,29 @@ namespace OverwatchCore.Tests.Core
 {
     public class OverwatchClientTest
     {
+        private string name = "SpyderHunter#1589";
+        private string url = "https://playoverwatch.com/en-gb/career/pc/eu/SpyderHunter-1589";
+
         [Fact]
         public async void GetPlayer_Username_Only_Overload_With_Battletag_Argument_Returns_Valid_Page()
         {
-            var mockWebClient = new MockProfileClient();
-            using (var owClient = new OverwatchClient(mockWebClient))
+            using (var owClient = new OverwatchClient(new MockProfileClient()))
             {
-                var result = await owClient.GetPlayerAsync("SpyderHunter#1589");
-                Assert.Equal("https://playoverwatch.com/en-gb/career/pc/eu/SpyderHunter-1589", result.ProfileUrl);
+                var result = await owClient.GetPlayerAsync(name);
+
+                result.Should().NotBeNull();
+                result.ProfileUrl.Should().NotBeNull();
+                result.ProfileUrl.Should().Be(url);
             }
         }
 
         [Fact]
         public async void GetPlayer_Username_Only_Overload_With_Battletag_Argument_And_No_Pc_Region_Should_Throw_Exception()
         {
-            var mockWebClient = new MockProfileClient();
-            using (var owClient = new OverwatchClient(mockWebClient, Platform.Psn, Platform.Xbl))
+            using (var owClient = new OverwatchClient(new MockProfileClient(), Platform.Psn, Platform.Xbl))
             {
-                await Assert.ThrowsAsync<ArgumentException>(async () => await owClient.GetPlayerAsync("SpyderHunter#1589"));
+                Func<Task> getPlayerAsync = () => owClient.GetPlayerAsync(name);
+                await getPlayerAsync.Should().ThrowAsync<ArgumentException>();
             }
         }
     }
