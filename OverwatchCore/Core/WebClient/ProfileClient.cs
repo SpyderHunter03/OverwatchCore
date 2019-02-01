@@ -22,7 +22,7 @@ namespace OverwatchCore.Core.WebClient
         
         internal abstract Task<ProfileRequestData> GetProfileDetectPlatform(string username);
 
-        internal abstract Task<List<Alias>> GetAliases(string id);
+        internal abstract Task<ICollection<Alias>> GetAliases(string id);
 
         public sealed class ProfileRequestData
         {
@@ -42,33 +42,6 @@ namespace OverwatchCore.Core.WebClient
                 ReqContent = reqContent;
                 PlayerPlatform = playerPlatform;
             }
-        }
-
-        internal sealed class Visibility
-        {
-            public string name { get; set; }
-            public bool isPublic { get; set; }
-            public bool isPrivate { get; set; }
-            public bool isFriendsOnly { get; set; }
-        }
-
-        internal sealed class Alias
-        {
-            public string platform { get; set; }
-            public int id { get; set; }
-            public string name { get; set; }
-            public string urlName { get; set; }
-            public Visibility visibility { get; set; }
-        }
-
-        internal sealed class Profile
-        {
-            public string platform { get; set; }
-            public string name { get; set; }
-            public string urlName { get; set; }
-            public int level { get; set; }
-            public string portrait { get; set; }
-            public bool isPublic { get; set; }
         }
     }
 }

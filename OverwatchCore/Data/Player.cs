@@ -7,6 +7,7 @@ namespace OverwatchCore.Data
 {
     public sealed class Player
     {
+        public string PlayerId { get; set; }
         public string Username { get; set; }
         internal string UsernameUrlFriendly => Username.BattletagToUrlFriendlyString();
         public Platform Platform { get; set; }
@@ -25,16 +26,16 @@ namespace OverwatchCore.Data
         public Uri CompetitiveRankImageUrl { get; set; }
         public Uri ProfilePortraitUrl { get; set; }
 
-        //public List<Alias> Aliases { get; set; }
-        //public string PlayerId { get; set; }
+        public List<Alias> Aliases { get; set; }
+        public sealed class Alias
+        {
+            public Platform Platform { get; set; }
+            public string Username { get; set; }
+            internal string UrlName;
+            public Visibility ProfileVisibility { get; set; }
+        }
+
         //public List<Achievement> Achievements { get; set; }
         //public Dictionary<Endorsement, decimal> Endorsements { get; set; }
-        // public sealed class Alias
-        // {
-        //     public Platform Platform { get; set; }
-        //     public string Username { get; set; }
-        //     internal string UrlName;
-        //     public Visibility ProfileVisibility { get; set; }
-        // }
     }
 }

@@ -13,10 +13,12 @@ namespace OverwatchCore.Tests.Core
         [Fact]
         public async void GetPlayerStats_ReturnsNotNull_WhenLookingForMyPersonalProfile()
         {
-            var osClient = new OverstatClient();
-            var playerStats = await osClient.GetPlayerStatsAsync(Platform.Pc, name);
+            using (var osClient = new OverstatClient())
+            {
+                var playerStats = await osClient.GetPlayerStatsAsync(Platform.Pc, name);
 
-            playerStats.Should().NotBeNull();
+                playerStats.Should().NotBeNull();
+            }
         }
     }
 }

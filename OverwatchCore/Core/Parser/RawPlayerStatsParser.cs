@@ -7,9 +7,9 @@ using OverwatchCore.Enums;
 
 namespace OverwatchCore.Core.Parser
 {
-    internal static class RawPlayerStatsParser
+    internal sealed class RawPlayerStatsParser
     {
-        internal static Player Parse(this RawPlayerStats stats, Platform platform, string profileUrl)
+        internal Player Parse(RawPlayerStats stats, Platform platform, string profileUrl)
         {
             Player player = new Player();
             player.Username = stats.Name;

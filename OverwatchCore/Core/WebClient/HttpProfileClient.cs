@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using OverwatchCore.Data;
 using OverwatchCore.Enums;
 using OverwatchCore.Extensions;
 
@@ -12,28 +13,24 @@ namespace OverwatchCore.Core.WebClient
 {
     internal sealed class HttpProfileClient : ProfileClient
     {
-        private readonly HttpClient _careerClient;
-        private readonly HttpClient _searchClient;
+        private readonly Uri _careerUri;
+        private readonly Uri _platformUri;
+        private readonly Uri _ovrstatUri;
 
         internal HttpProfileClient()
         {
             // TODO: Keep an eye on this to see if TLS 1.2 support makes it's way into older framework versions - seems unlikely though.
             try { ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12; }
             catch { ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls11; }
-            _careerClient = new HttpClient
-            {
-                BaseAddress = new Uri("https://playoverwatch.com/en-us/career/")
-            };
-            _searchClient = new HttpClient
-            {
-                BaseAddress = new Uri("https://playoverwatch.com/en-us/career/platforms/")
-            };
+            
+            _careerUri = new Uri("https://playoverwatch.com/en-us/career/");
+            _platformUri = new Uri("https://playoverwatch.com/en-us/career/platforms/");
+            _ovrstatUri = new Uri("https://ovrstat.com/stats/");
         }
 
         public override void Dispose() 
         {
-            _careerClient.Dispose();
-            _searchClient.Dispose();
+            base.Dispose();
         }
 
         internal override Task<ProfileRequestData> GetProfileExact(string username, Platform platform)
@@ -67,35 +64,44 @@ namespace OverwatchCore.Core.WebClient
 
         internal async Task<(string Url, string Content)?> GetProfilePageInformation(string reqString, Platform platform)
         {
-            using (var result = await _careerClient.GetAsync(reqString))
+            var values = await GetValuesFromClient(_careerUri, reqString);
+            
+            if (!values.HasValue || values.Value.Content.Contains("Profile Not Found")) 
+                return null;
+
+            return values;
+        }
+
+        internal override async Task<ICollection<Alias>> GetAliases(string id)
+        {
+            var values = await GetValuesFromClient(_platformUri, id);
+
+            if (!values.HasValue || values.Value.Content.Contains("[]")) 
+                return null;
+
+            var aliases = JsonConvert.DeserializeObject<List<Alias>>(values.Value.Content);
+
+            return aliases;
+        }
+
+        internal async Task<(string Url, string Content)?> GetOverstatProfile(string reqString, Platform platform)
+        {
+            var values = await GetValuesFromClient(_careerUri, reqString);
+            
+            if (!values.HasValue || values.Value.Content.Contains("Player Not Found"))
+                return null;
+
+            return values;
+        }
+
+        private async Task<(string Url, string Content)?> GetValuesFromClient(Uri uri, string getValue)
+        {
+            using (var result = await new HttpClient() { BaseAddress = uri }.GetAsync(getValue))
             {
                 if (!result.IsSuccessStatusCode) return null;
                 var rsltContent = await result.Content.ReadAsStringAsync();
-                if (rsltContent.Contains("Profile Not Found")) return null;
                 var rsltUrl = result.RequestMessage.RequestUri.ToString();
                 return (rsltUrl, rsltContent);
-            }
-        }
-
-        internal async Task<(string Url, string Content)?> GetProfileApiInformation(string userId)
-        {
-            using (var secResult = await _searchClient.GetAsync(userId))
-            {
-                if (!secResult.IsSuccessStatusCode) return null;
-                var secRsltContent = await secResult.Content.ReadAsStringAsync();
-                if (secRsltContent.Contains("[]")) return null;
-                var secRsltUrl = secResult.RequestMessage.RequestUri.ToString();
-                return (secRsltUrl, secRsltContent);
-            }
-        }
-
-        internal override async Task<List<Alias>> GetAliases(string id)
-        {
-            using (var result = await _careerClient.GetAsync($"platforms/{id}"))
-            {
-                if (!result.IsSuccessStatusCode) return null;
-                var jsonText = await result.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<List<Alias>>(jsonText);
             }
         }
     }
