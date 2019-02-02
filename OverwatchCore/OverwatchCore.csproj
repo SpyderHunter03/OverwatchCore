@@ -1,8 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <PackageId>OverwatchCore</PackageId>
     <Version>1.0.1</Version>
+    <Title>OverwatchCore</Title>
+    <Authors>SpyderHunter03</Authors>
+    <Description>This package is used to get an Overwatch player's data from PlayOverwatch.Net via the API Ovrstat.Net.</Description>
+    <PackageTags>Overwatch;DotNetCore;DotNetCore2.1</PackageTags>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
