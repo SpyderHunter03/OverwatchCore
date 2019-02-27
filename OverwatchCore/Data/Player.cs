@@ -12,15 +12,15 @@ namespace OverwatchCore.Data
         internal string UsernameUrlFriendly => Username.BattletagToUrlFriendlyString();
         public Platform Platform { get; set; }
         public Uri ProfileUrl { get; set; }
-        public long? PlayerLevel { get; set; }
+        public ushort PlayerLevel { get; set; }
         public Uri PlayerLevelImage { get; set; }
-        public long? Prestige { get; set; }
+        public ushort Prestige { get; set; }
         public Uri PrestigeImage { get; set; }
-        public long? CompetitiveRank { get; set; }
-        public long? EndorsementLevel { get; set; }
+        public ushort CompetitiveRank { get; set; }
+        public ushort EndorsementLevel { get; set; }
         public Uri EndorsementImage { get; set; }
         public bool? IsProfilePrivate { get; set; }
-        public long? GamesWon { get; set; }
+        public long GamesWon { get; set; }
         public Stat CasualStats { get; set; }
         public Stat CompetitiveStats { get; set; }
         public Uri CompetitiveRankImageUrl { get; set; }

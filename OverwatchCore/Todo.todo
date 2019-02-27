@@ -9,7 +9,7 @@ OverwatchCore Todo List
 ✔ Move all code over to OverstatClient.cs @done (1/31/2019, 2:56:52 AM)
 ✔ Parse RawPlayerStats into Player object @done (1/31/2019, 2:56:53 AM)
 
-☐ Convert OverstatClient to same structure as previous OverwatchClient
-    ☐ Need to populate Player.PlayerId from career client
-☐ Clean up remaining unused code
+✔ Convert OverstatClient to same structure as previous OverwatchClient @done (2/2/2019, 11:43:04 PM)
+    ✔ Need to populate Player.PlayerId from career client @done (2/2/2019, 11:43:04 PM)
+✔ Clean up remaining unused code @done (2/2/2019, 11:43:06 PM)
 ☐ Create tests for OverstatTestSource.txt

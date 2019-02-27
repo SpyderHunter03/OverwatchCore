@@ -15,16 +15,16 @@ namespace OverwatchCore.Core.Parser
             player.Username = stats.Name;
             player.Platform = platform;
             player.ProfileUrl = new Uri(profileUrl);
-            player.PlayerLevel = stats.Level;
+            player.PlayerLevel = Convert.ToUInt16(stats.Level ?? 0);
             player.PlayerLevelImage = stats.LevelIcon;
-            player.Prestige = stats.Prestige;
+            player.Prestige = Convert.ToUInt16(stats.Prestige ?? 0);
             player.PrestigeImage = stats.PrestigeIcon;
-            player.CompetitiveRank = stats.Rating;
+            player.CompetitiveRank = Convert.ToUInt16(stats.Rating ?? 0);
             player.CompetitiveRankImageUrl = stats.RatingIcon;
-            player.EndorsementLevel = stats.Endorsement;
+            player.EndorsementLevel = Convert.ToUInt16(stats.Endorsement ?? 0);
             player.EndorsementImage = stats.EndorsementIcon;
             player.IsProfilePrivate = stats.Private;
-            player.GamesWon = stats.GamesWon;
+            player.GamesWon = stats.GamesWon ?? 0;
             player.ProfilePortraitUrl = stats.Icon;
 
             player.CasualStats = ParseCasualStats(stats);
