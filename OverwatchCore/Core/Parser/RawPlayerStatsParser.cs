@@ -15,10 +15,10 @@ namespace OverwatchCore.Core.Parser
             player.Username = stats.Name;
             player.Platform = platform;
             player.ProfileUrl = new Uri(profileUrl);
-            player.PlayerLevel = Convert.ToUInt16(stats.Level ?? 0);
-            player.PlayerLevelImage = stats.LevelIcon;
             player.Prestige = Convert.ToUInt16(stats.Prestige ?? 0);
             player.PrestigeImage = stats.PrestigeIcon;
+            player.PlayerLevel = Convert.ToUInt16(stats.Level ?? 0);
+            player.PlayerLevelImage = stats.LevelIcon;
             player.CompetitiveRank = Convert.ToUInt16(stats.Rating ?? 0);
             player.CompetitiveRankImageUrl = stats.RatingIcon;
             player.EndorsementLevel = Convert.ToUInt16(stats.Endorsement ?? 0);
@@ -30,6 +30,7 @@ namespace OverwatchCore.Core.Parser
             player.CasualStats = ParseCasualStats(stats);
             player.CompetitiveStats = ParseCompetitiveStats(stats);
 
+            player.PlayerLevel = (ushort)((player.Prestige * 100) + player.PlayerLevel);
             return player;
         }
 

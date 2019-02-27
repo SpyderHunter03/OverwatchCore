@@ -13,3 +13,4 @@ OverwatchCore Todo List
     ✔ Need to populate Player.PlayerId from career client @done (2/2/2019, 11:43:04 PM)
 ✔ Clean up remaining unused code @done (2/2/2019, 11:43:06 PM)
 ☐ Create tests for OverstatTestSource.txt
+☐ Write UpdatePlayerAsync for RawPlayerStats

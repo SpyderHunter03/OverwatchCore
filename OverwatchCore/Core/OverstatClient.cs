@@ -57,7 +57,8 @@ namespace OverwatchCore.Core
         public async Task<Player> GetPlayerAsync(string username)
         {
             if (username.IsValidBattletag() && DetectedPlatforms.Contains(Platform.Pc))
-                return await GetPlayerAsync(username, Platform.Pc);
+                //return await GetPlayerAsync(username, Platform.Pc);
+                return await GetPlayerStatsAsync(Platform.Pc, username);
             if (!username.IsValidPsnId() && !username.IsValidXblId())
                 throw new ArgumentException("Not a valid XBL, PSN or BattlenetID", nameof(username));
             var player = new Player { Username = username };

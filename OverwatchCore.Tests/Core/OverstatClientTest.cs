@@ -20,5 +20,17 @@ namespace OverwatchCore.Tests.Core
                 playerStats.Should().NotBeNull();
             }
         }
+
+        [Fact]
+        public async void GetPlayerAsync_ReturnsNotNull_WhenLookingForMyPersonalProfile()
+        {
+            using (var osClient = new OverstatClient())
+            {
+                var playerStats = await osClient.GetPlayerAsync(name);
+
+                playerStats.Should().NotBeNull();
+                playerStats.PlayerLevel.Should().BeGreaterOrEqualTo(717);
+            }
+        }
     }
 }

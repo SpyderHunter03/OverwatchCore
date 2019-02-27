@@ -96,7 +96,7 @@ namespace OverwatchCore.Core.WebClient
 
         private async Task<(string Url, string Content)?> GetValuesFromClient(Uri uri, string getValue)
         {
-            using (var result = await new HttpClient() { BaseAddress = uri }.GetAsync(getValue))
+            using (var result = await new HttpClient().GetAsync($"{uri}{getValue}"))
             {
                 if (!result.IsSuccessStatusCode) return null;
                 var rsltContent = await result.Content.ReadAsStringAsync();
